@@ -1,0 +1,582 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a blog about books."
+  version: "1.0.0"
+  title: "Book Blog API"
+host: "localhost:8080"
+tags:
+- name: "Book"
+  description: "The method about book."
+- name: "User"
+  description: "The method about users."
+- name: "Bookshelf"
+  description: "The method anout bookshelf."
+- name: "Review"
+  description: "The method about review."
+- name: "Token"
+  description: "The method about login."
+schemes:
+- "http"
+paths:
+  /books:
+    get:
+      tags:
+      - "Book"
+      summary: "Get all book"
+      description: "Returns a list containing all books. The list supports paging."
+      operationId: "get-books"
+      parameters:
+      - name: "pageNumber"
+        in: "query"
+        description: "Page number"
+        required: false
+        type: "integer"
+        x-exportParamName: "PageNumber"
+        x-optionalDataType: "Int32"
+      responses:
+        "200":
+          description: "A list of Book"
+          schema:
+            $ref: "#/definitions/Books"
+  /books/{bookId}:
+    get:
+      tags:
+      - "Book"
+      summary: "Get a book information"
+      description: "Gets `book` objects."
+      operationId: "get-book"
+      parameters:
+      - name: "bookId"
+        in: "path"
+        description: "Book's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "BookId"
+      responses:
+        "200":
+          description: "Get the book's info"
+          schema:
+            $ref: "#/definitions/Book"
+        "403":
+          description: "Book cannot be got."
+        "404":
+          description: "Book does not exists."
+  /reviews/{bookId}:
+    get:
+      tags:
+      - "Review"
+      summary: "Get all reviews"
+      description: "Returns a list containing all reviews. The list supports paging."
+      operationId: "get-reviews"
+      parameters:
+      - name: "bookId"
+        in: "path"
+        description: "Book's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "BookId"
+      - name: "pageNumber"
+        in: "query"
+        description: "Page number"
+        required: false
+        type: "integer"
+        x-exportParamName: "PageNumber"
+        x-optionalDataType: "Int32"
+      responses:
+        "200":
+          description: "A list of review"
+          schema:
+            $ref: "#/definitions/Reviews"
+  /reviews/{bookId}/{reviewId}:
+    get:
+      tags:
+      - "Review"
+      summary: "Get a review information"
+      description: "Gets `review` objects."
+      operationId: "get-review"
+      parameters:
+      - name: "bookId"
+        in: "path"
+        description: "Book's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "BookId"
+      - name: "reviewId"
+        in: "path"
+        description: "Review's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "ReviewId"
+      responses:
+        "200":
+          description: "Get the review's info"
+          schema:
+            $ref: "#/definitions/Review"
+        "403":
+          description: "Review cannot be got."
+        "404":
+          description: "Review does not exists."
+  /token:
+    get:
+      tags:
+      - "Token"
+      summary: "Sign in account"
+      description: "Sign in to your account, and get a token."
+      operationId: "sign-in"
+      parameters:
+      - name: "Username"
+        in: "query"
+        description: "User's username"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "Password"
+        in: "query"
+        description: "User's password"
+        required: true
+        type: "string"
+        x-exportParamName: "Password"
+      responses:
+        "200":
+          description: "Sign in account successfully."
+          schema:
+            $ref: "#/definitions/Token"
+        "403":
+          description: "Account cannot be got."
+        "404":
+          description: "Account does not exists."
+    post:
+      tags:
+      - "Token"
+      summary: "Create a account"
+      description: "Create a 'user' object."
+      operationId: "sign-up"
+      parameters:
+      - in: "body"
+        name: "userInfo"
+        description: "User's info"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+        x-exportParamName: "UserInfo"
+      responses:
+        "201":
+          description: "User succesfully created."
+          schema:
+            $ref: "#/definitions/Token"
+        "403":
+          description: "Account cannot be created."
+    delete:
+      tags:
+      - "Token"
+      summary: "Sign out"
+      description: "Sign out account"
+      operationId: "Sign-out"
+      parameters: []
+      responses:
+        "204":
+          description: "Sign out succesfully."
+        "403":
+          description: "Sign out failed."
+  /users/{username}:
+    get:
+      tags:
+      - "User"
+      summary: "Get a user"
+      description: "Get a 'user' object."
+      operationId: "get-user"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      responses:
+        "200":
+          description: "Get the user's info"
+          schema:
+            $ref: "#/definitions/User"
+        "403":
+          description: "User cannot be got."
+        "404":
+          description: "User does not exists."
+  /users/{username}/bookshelfs:
+    get:
+      tags:
+      - "User - Bookshelf"
+      summary: "Get all bookshelfs"
+      description: "Returns a list containing all bookshelfs. The list supports paging."
+      operationId: "get-bookshelfs"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "pageNumber"
+        in: "query"
+        description: "Page number"
+        required: false
+        type: "integer"
+        x-exportParamName: "PageNumber"
+        x-optionalDataType: "Int32"
+      responses:
+        "200":
+          description: "A list of Bookshelf"
+          schema:
+            $ref: "#/definitions/Bookshelfs"
+        "403":
+          description: "Bookshelf cannot be got."
+    post:
+      tags:
+      - "User - Bookshelf"
+      summary: "Create a bookshelf"
+      description: "Create a 'bookshelf' object."
+      operationId: "create-bookshelf"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - in: "body"
+        name: "bookshelf"
+        description: "Info of bookshelf"
+        required: true
+        schema:
+          $ref: "#/definitions/BookshelfInfo"
+        x-exportParamName: "Bookshelf"
+      responses:
+        "201":
+          description: "Bookshelf succesfully created."
+        "403":
+          description: "Bookshelf cannot be created."
+  /users/{username}/bookshelfs/{bookshelfName}:
+    get:
+      tags:
+      - "User - Bookshelf"
+      summary: "Get a bookshelf of user"
+      description: "Get a 'bookshelf' object."
+      operationId: "get-bookshelf"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "bookshelfName"
+        in: "path"
+        description: "Bookshelf's name"
+        required: true
+        type: "string"
+        x-exportParamName: "BookshelfName"
+      - name: "pageNumber"
+        in: "query"
+        description: "Page number"
+        required: false
+        type: "integer"
+        x-exportParamName: "PageNumber"
+        x-optionalDataType: "Int32"
+      responses:
+        "200":
+          description: "Get the bookshelf's info"
+          schema:
+            $ref: "#/definitions/Bookshelf"
+        "403":
+          description: "Bookshelf cannot be got."
+        "404":
+          description: "Bookshelf does not exists."
+    delete:
+      tags:
+      - "User - Bookshelf"
+      summary: "Delete a bookshelf"
+      description: "Delete a 'bookshelf' object."
+      operationId: "delete-bookshelf"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "bookshelfName"
+        in: "path"
+        description: "Bookshelf's name"
+        required: true
+        type: "string"
+        x-exportParamName: "BookshelfName"
+      responses:
+        "204":
+          description: "Bookshelf succesfully deleted."
+        "403":
+          description: "Bookshelf cannot be deleted."
+        "404":
+          description: "Bookshelf does not exists."
+  /users/{username}/bookshelfs/{bookshelfName}/{bookId}:
+    post:
+      tags:
+      - "User - Bookshelf"
+      summary: "Add a book to bookshelf."
+      description: "Add a 'book' object to book shelf."
+      operationId: "add-bookInBookshelf"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "bookshelfName"
+        in: "path"
+        description: "Bookshelf's name"
+        required: true
+        type: "string"
+        x-exportParamName: "BookshelfName"
+      - name: "bookId"
+        in: "path"
+        description: "Book's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "BookId"
+      responses:
+        "201":
+          description: "Book succesfully added."
+        "403":
+          description: "Book cannot be added."
+    delete:
+      tags:
+      - "User - Bookshelf"
+      summary: "delete a book to bookshelf."
+      description: "delete a 'book' object to book shelf."
+      operationId: "delete-bookInBookshelf"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's ID"
+        required: true
+        type: "string"
+        x-exportParamName: "Username"
+      - name: "bookshelfName"
+        in: "path"
+        description: "Bookshelf's name"
+        required: true
+        type: "string"
+        x-exportParamName: "BookshelfName"
+      - name: "bookId"
+        in: "path"
+        description: "Book's ID"
+        required: true
+        type: "integer"
+        x-exportParamName: "BookId"
+      responses:
+        "204":
+          description: "Book succesfully deleted."
+        "403":
+          description: "Book cannot be deleted."
+definitions:
+  Book:
+    required:
+    - "bookId"
+    properties:
+      bookId:
+        type: "integer"
+      bookName:
+        type: "string"
+      autor:
+        type: "string"
+      info:
+        type: "string"
+    example:
+      bookName: "bookName"
+      autor: "autor"
+      bookId: 6
+      info: "info"
+  Books:
+    required:
+    - "books"
+    - "num"
+    properties:
+      num:
+        type: "integer"
+      books:
+        type: "array"
+        items:
+          $ref: "#/definitions/Book"
+    example:
+      books:
+      - bookName: "bookName"
+        autor: "autor"
+        bookId: 6
+        info: "info"
+      - bookName: "bookName"
+        autor: "autor"
+        bookId: 6
+        info: "info"
+      num: 0
+  User:
+    required:
+    - "Password"
+    - "Username"
+    properties:
+      Username:
+        type: "string"
+      Password:
+        type: "string"
+    example:
+      Username: "Username"
+      Password: "Password"
+  Bookshelf:
+    required:
+    - "bookshelf"
+    - "num"
+    properties:
+      num:
+        type: "integer"
+      bookshelf:
+        type: "array"
+        items:
+          $ref: "#/definitions/Bookshelf_bookshelf"
+    example:
+      bookshelf:
+      - bookName: "bookName"
+        bookId: 6
+      - bookName: "bookName"
+        bookId: 6
+      num: 0
+  BookshelfInfo:
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+  Bookshelfs:
+    required:
+    - "bookshelfs"
+    - "num"
+    properties:
+      num:
+        type: "integer"
+      bookshelfs:
+        type: "array"
+        items:
+          $ref: "#/definitions/Bookshelfs_bookshelfs"
+    example:
+      num: 0
+      bookshelfs:
+      - bookshelfName: "bookshelfName"
+      - bookshelfName: "bookshelfName"
+  Review:
+    required:
+    - "ID"
+    properties:
+      ID:
+        type: "integer"
+      Content:
+        type: "string"
+      autor:
+        type: "string"
+    example:
+      Content: "Content"
+      ID: 6
+      autor: "autor"
+  Reviews:
+    required:
+    - "num"
+    - "reviews"
+    properties:
+      num:
+        type: "integer"
+      reviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/Review"
+    example:
+      reviews:
+      - Content: "Content"
+        ID: 6
+        autor: "autor"
+      - Content: "Content"
+        ID: 6
+        autor: "autor"
+      num: 0
+  Token:
+    required:
+    - "Token"
+    properties:
+      Token:
+        type: "string"
+    example:
+      Token: "Token"
+  Bookshelf_bookshelf:
+    type: "object"
+    properties:
+      bookName:
+        type: "string"
+      bookId:
+        type: "integer"
+    example:
+      bookName: "bookName"
+      bookId: 6
+  Bookshelfs_bookshelfs:
+    type: "object"
+    properties:
+      bookshelfName:
+        type: "string"
+    example:
+      bookshelfName: "bookshelfName"
+parameters:
+  bookID:
+    name: "bookId"
+    in: "path"
+    description: "Book's ID"
+    required: true
+    type: "integer"
+    x-exportParamName: "BookId"
+  reviewID:
+    name: "reviewId"
+    in: "path"
+    description: "Review's ID"
+    required: true
+    type: "integer"
+    x-exportParamName: "ReviewId"
+  username:
+    name: "username"
+    in: "path"
+    description: "User's ID"
+    required: true
+    type: "string"
+    x-exportParamName: "Username"
+  userInfo:
+    in: "body"
+    name: "userInfo"
+    description: "User's info"
+    required: true
+    schema:
+      $ref: "#/definitions/User"
+    x-exportParamName: "UserInfo"
+  bookshelfName:
+    name: "bookshelfName"
+    in: "path"
+    description: "Bookshelf's name"
+    required: true
+    type: "string"
+    x-exportParamName: "BookshelfName"
+  pageSize:
+    name: "pageSize"
+    in: "query"
+    description: "Number of objects returned"
+    required: false
+    type: "integer"
+  pageNumber:
+    name: "pageNumber"
+    in: "query"
+    description: "Page number"
+    required: false
+    type: "integer"
+    x-exportParamName: "PageNumber"
+    x-optionalDataType: "Int32"
